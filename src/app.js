@@ -28,7 +28,7 @@ function render(){
   if(screen==='island')renderIsland();if(screen==='match')renderMatch();if(screen==='sanctuary')renderSanctuary();if(screen==='arcade')renderArcade();
 }
 function renderIsland(){
-  app.innerHTML=`<section class="screen">${shell()}
+  app.innerHTML=`<section class="screen island-screen">${shell()}
     <div class="card hero">
       <div class="hill"></div><div class="hill two"></div>
       <button class="island-place sanctuary" data-go="sanctuary">🦋 Sanctuary</button>
@@ -41,13 +41,14 @@ function renderIsland(){
     </div>
     <div class="section-title"><h2>Today on the island</h2><small>${save.levelWins} level${save.levelWins===1?'':'s'} cleared</small></div>
     <div class="card quest"><div class="quest-icon">${save.planted.milkweed?'🦋':'🌱'}</div><div><strong>${save.planted.milkweed?'A new visitor!':'Restore the sunny border'}</strong><p>${save.planted.milkweed?'The milkweed patch has attracted a Monarch to the sanctuary.':'Play a match-3 level to earn a milkweed cutting for the butterfly garden.'}</p></div></div>
-    <div class="dialogue"><div class="portrait">🐘</div><div class="speech"><b>Ellie:</b> ${save.levelWins?'That flower bed is looking much better.':'One flower bed at a time. We are absolutely not doing the whole island before lunch.'}</div></div>
-    <div class="dialogue"><div class="portrait">🐒</div><div class="speech"><b>Gigi:</b> ${save.levelWins?'Counterpoint: more flowers. Everywhere.':'I have already drawn plans for a waterslide.'}</div></div>
-    <p class="tiny-note" style="text-align:center;margin-top:16px"><button id="resetSave" style="border:0;background:transparent;text-decoration:underline;color:#776f61">Reset prototype progress</button></p>
+    <div class="story-strip">
+      <span class="portrait">🐘</span><div class="story-copy"><b>Ellie:</b> ${save.levelWins?'That flower bed is looking much better.':'One flower bed at a time. We are absolutely not doing the whole island before lunch.'}</div>
+      <span class="portrait">🐒</span>
+    </div>
   </section>`;
 }
 function renderMatch(){
-  app.innerHTML=`<section class="screen">${shell('Sunny Border','<span class="pill">Level '+(save.levelWins+1)+'</span>')}
+  app.innerHTML=`<section class="screen match-screen">${shell('Sunny Border','<span class="pill">Level '+(save.levelWins+1)+'</span>')}
     <div class="card match-wrap">
       <div class="match-stats"><div class="stat">MOVES<b id="moves">18</b></div><div class="stat">SUNFLOWERS<b id="yellow">0 / 12</b></div><div class="stat">SCORE<b id="score">0</b></div></div>
       <canvas id="matchCanvas" aria-label="Match three board"></canvas>
@@ -73,7 +74,7 @@ function finishMatch(){
 }
 function renderSanctuary(){
   const monarch=save.butterflies.monarch;
-  app.innerHTML=`<section class="screen">${shell('Butterfly Sanctuary',`<span class="pill">${1+(monarch?1:0)} / 3 found</span>`)}
+  app.innerHTML=`<section class="screen sanctuary-screen">${shell('Butterfly Sanctuary',`<span class="pill">${1+(monarch?1:0)} / 3 found</span>`)}
     <div class="sanctuary-scene">
       <div class="glasshouse"></div>
       <div class="flowerbed">🌼 🌸 ${save.planted.milkweed?'🌿 🌺 🌿':'🌱'} 🌼</div>
@@ -104,7 +105,7 @@ function plantMilkweed(){
 }
 
 function renderArcade(){
-  app.innerHTML=`<section class="screen">${shell('Old Pavilion','<span class="pill">1 game</span>')}
+  app.innerHTML=`<section class="screen arcade-screen">${shell('Old Pavilion','<span class="pill">1 game</span>')}
     <div class="card arcade-card">
       <div class="cabinet"><div class="cabinet-title">GIGI'S PONG</div><div id="pongStage" class="pong-stage" aria-label="Pong game"></div></div>
       <strong>Drag anywhere on the screen to move your paddle.</strong>

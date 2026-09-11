@@ -30,7 +30,9 @@
 - Prefer large tap targets (about 52-60px or larger), generous spacing, strong contrast, and fewer controls over dense UI.
 - Do not solve cramped layouts by shrinking text; reflow, stack, or simplify the layout instead.
 
-## Scrolling
-- Never expose the browser/HTML document scrollbar in normal play.
-- The app shell may scroll internally when content exceeds the viewport, but its scrollbar should remain visually hidden.
-- Visible scrollbars are reserved for deliberate in-game list/panel regions where they communicate useful local scrolling.
+## Screen layout and scrolling
+- Treat the phone viewport as a game screen, not a scrolling web page.
+- Main screens and the app shell must never scroll, even with the scrollbar hidden.
+- Fit the current interaction into the viewport using composition, positioning, tabs, overlays, or compact information hierarchy.
+- Never shrink important text to make a screen fit. Simplify or restructure instead.
+- Scrolling is allowed only inside clearly bounded in-game regions that are intrinsically lists, books, inventories, collections, or similar panels.

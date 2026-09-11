@@ -87,3 +87,28 @@ body{overscroll-behavior:none}
 
 /* Only deliberately scrollable in-game lists should ever show their own scrollbar. */
 .game-scroll{overflow:auto;scrollbar-gutter:stable}
+
+/* Fixed-screen game shell: screens never behave like web pages. */
+#app{height:calc(100dvh - 92px);min-height:0;padding-top:env(safe-area-inset-top);padding-bottom:8px;overflow:hidden}
+.screen{height:100%;min-height:0;display:flex;flex-direction:column;overflow:hidden}
+.topbar,.screen-head,.section-title,.hero,.quest,.dialogue,.story-strip,.reward-banner{flex:none}
+.island-screen .hero{height:250px}
+.island-screen .section-title{margin:14px 4px 8px}
+.island-screen .quest{padding:14px 16px}
+.story-strip{display:grid;grid-template-columns:52px 1fr 42px;align-items:center;gap:10px;margin-top:10px;background:rgba(255,255,255,.88);border-radius:20px;padding:10px 12px;box-shadow:0 4px 12px rgba(55,77,63,.08)}
+.story-strip .portrait{width:52px;height:52px;font-size:32px}.story-copy{font-size:17px;line-height:1.35}
+.match-screen .screen-head{margin-top:8px}.match-screen .match-wrap{position:relative;flex:1;min-height:0;display:flex;flex-direction:column}
+.match-screen #matchCanvas{min-height:0;flex:1;width:auto;max-width:100%;align-self:center;aspect-ratio:7/8}
+.match-screen .reward-banner{display:none}.match-screen .match-help{margin-bottom:2px}
+#matchResult:not(:empty){position:absolute;inset:10px;z-index:5;display:grid;place-items:center;padding:12px;border-radius:18px;background:rgba(53,91,79,.88)}
+#matchResult:not(:empty)>.card{margin:0!important;width:100%;max-width:300px}
+.sanctuary-screen .screen-head{margin-top:8px}.sanctuary-screen .sanctuary-scene{height:225px}
+.sanctuary-screen .section-title{margin:10px 4px 6px}.sanctuary-screen .flower-strip{flex:none}.sanctuary-screen>.quest{padding:12px 14px}
+.sanctuary-screen .collection{flex:1;min-height:90px;display:block;overflow-y:auto;overflow-x:hidden;margin-top:4px;padding:2px 7px 8px 1px;scrollbar-width:auto}
+.sanctuary-screen .species{margin-bottom:9px}.sanctuary-screen .species:last-child{margin-bottom:0}
+.arcade-screen .arcade-card{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:center}.arcade-screen .dialogue{margin-bottom:2px}
+
+/* Hub labels occupy fixed map positions and must not collide with character cards. */
+.island-screen .island-place.sanctuary{top:44px}
+.island-screen .island-place.arcade{top:44px}
+.island-screen .characters{bottom:78px}
