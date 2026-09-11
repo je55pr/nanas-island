@@ -36,3 +36,9 @@
 - Fit the current interaction into the viewport using composition, positioning, tabs, overlays, or compact information hierarchy.
 - Never shrink important text to make a screen fit. Simplify or restructure instead.
 - Scrolling is allowed only inside clearly bounded in-game regions that are intrinsically lists, books, inventories, collections, or similar panels.
+
+## Rendering architecture
+- Render all player-facing visuals through one HTML5 canvas; do not build visible game UI from DOM elements.
+- Keep HTML as a minimal PWA/bootstrap shell only.
+- Use a fixed virtual portrait coordinate system with device-pixel-ratio aware scaling and touch-to-game coordinate mapping.
+- Preserve the fixed-screen rule: only bounded in-game regions such as books/lists may scroll, implemented inside the canvas.

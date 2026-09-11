@@ -15,9 +15,12 @@ A phone-first cosy match-3 game with long-term island restoration, butterfly col
 Target roughly 10 match-3 levels, one small island hub, the butterfly sanctuary, 4-6 flowers, 3 discoverable butterfly species, the two leads, persistent save data, and Pong as the first minigame.
 
 ## Technical direction
-Mobile-first HTML5 game. Start with responsive Canvas and touch-first controls, then make it installable/offline as a PWA. Keep desktop mouse support for development and testing.
+Mobile-first HTML5 game with a single visible Canvas, touch-first controls, offline/PWA support, and desktop mouse support for development/testing.
 
 ## Run the prototype
-Double-click `RUN.cmd`. It serves the game locally at `http://127.0.0.1:8877/` and opens it in the default browser.
+Double-click `RUN.cmd`. It serves the game locally at `http://127.0.0.1:8977/` and opens it in the default browser.
 
 The first playable prototype includes the island hub, a 7x8 touch-first match-3 board, persistent local progress, flower rewards, a butterfly sanctuary/field guide, and a tiny Pong minigame in the pavilion. Placeholder art is intentional; proposed generated-art slots are tracked in `docs/ART_APPROVALS.md`.
+
+## Rendering architecture
+All visible game UI is rendered through a single HTML5 canvas. The page itself is only a minimal PWA shell. The game uses a fixed 390x844 virtual portrait screen, scales cleanly to the device viewport/DPR, and keeps scrolling confined to intentional in-game regions such as the butterfly book.

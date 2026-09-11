@@ -4,18 +4,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
   <meta name="theme-color" content="#f5c84b">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>Nana's Island</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <main id="app" aria-live="polite"></main>
-  <nav id="nav" class="bottom-nav" aria-label="Main navigation">
-    <button data-screen="island">🏝️<span>Island</span></button>
-    <button data-screen="match">🌼<span>Play</span></button>
-    <button data-screen="sanctuary">🦋<span>Butterflies</span></button>
-    <button data-screen="arcade">🕹️<span>Arcade</span></button>
-  </nav>
+  <canvas id="game" aria-label="Nana's Island game"></canvas>
   <script type="module" src="src/app.js"></script>
 </body>
 </html>
