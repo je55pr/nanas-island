@@ -22,3 +22,10 @@
 - Preserve offline play and local save/progress as first-class requirements.
 - Keep systems deterministic/testable where practical.
 - Do not import Bionicle IP/assets from the earlier throwaway prototype into this project.
+
+## Accessibility and readability
+- The primary player needs unusually large, high-legibility text and chunky controls.
+- Treat 18px as the normal body-text floor on phone; secondary text should generally stay at 16px or larger.
+- Important labels, objectives, dialogue, rewards, and navigation must be easy to read without zooming.
+- Prefer large tap targets (about 52-60px or larger), generous spacing, strong contrast, and fewer controls over dense UI.
+- Do not solve cramped layouts by shrinking text; reflow, stack, or simplify the layout instead.
