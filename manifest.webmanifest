@@ -1,0 +1,12 @@
+{
+  "name": "Nana's Island",
+  "short_name": "Nana's Island",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#fff6cc",
+  "theme_color": "#f5c84b",
+  "orientation": "portrait",
+  "icons": [
+    {"src":"public/assets/app-icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}
+  ]
+}

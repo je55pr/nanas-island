@@ -16,3 +16,8 @@ Target roughly 10 match-3 levels, one small island hub, the butterfly sanctuary,
 
 ## Technical direction
 Mobile-first HTML5 game. Start with responsive Canvas and touch-first controls, then make it installable/offline as a PWA. Keep desktop mouse support for development and testing.
+
+## Run the prototype
+Double-click `RUN.cmd`. It serves the game locally at `http://127.0.0.1:8877/` and opens it in the default browser.
+
+The first playable prototype includes the island hub, a 7x8 touch-first match-3 board, persistent local progress, flower rewards, a butterfly sanctuary/field guide, and a tiny Pong minigame in the pavilion. Placeholder art is intentional; proposed generated-art slots are tracked in `docs/ART_APPROVALS.md`.
