@@ -29,3 +29,8 @@
 - Important labels, objectives, dialogue, rewards, and navigation must be easy to read without zooming.
 - Prefer large tap targets (about 52-60px or larger), generous spacing, strong contrast, and fewer controls over dense UI.
 - Do not solve cramped layouts by shrinking text; reflow, stack, or simplify the layout instead.
+
+## Scrolling
+- Never expose the browser/HTML document scrollbar in normal play.
+- The app shell may scroll internally when content exceeds the viewport, but its scrollbar should remain visually hidden.
+- Visible scrollbars are reserved for deliberate in-game list/panel regions where they communicate useful local scrolling.

@@ -78,3 +78,12 @@ body{font-size:18px;line-height:1.45}
 .characters{gap:8px}.character{max-width:47%}
 .bottom-nav span{font-size:16px}
 .stat{font-size:16px}
+
+/* App shell owns scrolling; never expose the browser/page scrollbar. */
+html,body{width:100%;height:100%;overflow:hidden}
+body{overscroll-behavior:none}
+#app{height:100dvh;overflow-y:auto;overflow-x:hidden;overscroll-behavior-y:contain;scrollbar-width:none;-ms-overflow-style:none}
+#app::-webkit-scrollbar{display:none}
+
+/* Only deliberately scrollable in-game lists should ever show their own scrollbar. */
+.game-scroll{overflow:auto;scrollbar-gutter:stable}
