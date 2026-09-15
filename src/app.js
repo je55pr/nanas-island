@@ -7,7 +7,7 @@ const VW=390,VH=844,NAV_Y=752,SAVE_KEY='nanas-island-prototype-v1';
 const fresh=()=>({sunshine:0,levelWins:0,inventory:{milkweed:0,nettles:0},planted:{milkweed:false,nettles:false},butterflies:{cabbage:true,monarch:false,peacock:false}});
 let save=load(),screen='island',match=null,pong=new PongModel(),matchWin=false;
 let cssW=VW,cssH=VH,scale=1,offX=0,offY=0,dpr=1,hits=[],lastTime=performance.now();
-let pointer=null,listScroll=0,listDrag=false,toastState=null;
+let pointer=null,listScroll=0,listDrag=false,toastState=null,resetConfirm=false;
 
 function load(){const base=fresh();try{const raw=JSON.parse(localStorage.getItem(SAVE_KEY)||'{}');return {...base,...raw,inventory:{...base.inventory,...(raw.inventory||{})},planted:{...base.planted,...(raw.planted||{})},butterflies:{...base.butterflies,...(raw.butterflies||{})}}}catch{return base}}
 function persist(){localStorage.setItem(SAVE_KEY,JSON.stringify(save))}
@@ -66,7 +66,7 @@ function panel(x,y,w,h,fill='rgba(255,255,255,.9)',r=22){
 function hitAt(x,y){for(let i=hits.length-1;i>=0;i--){const h=hits[i];if(x>=h.x&&x<=h.x+h.w&&y>=h.y&&y<=h.y+h.h)return h}return null}
 function point(e){const r=canvas.getBoundingClientRect();return{x:(e.clientX-r.left-offX)/scale,y:(e.clientY-r.top-offY)/scale}}
 function go(next){
-  screen=next;matchWin=false;listScroll=0;
+  screen=next;matchWin=false;listScroll=0;resetConfirm=false;
   if(screen==='match')match=new Match3Model(()=>{},finishMatch,currentLevel());
   if(screen==='arcade')pong=new PongModel();
 }
@@ -84,12 +84,16 @@ function plantMilkweed(){
 function plantNettles(){
   if((save.inventory.nettles||0)<1||save.planted.nettles)return;save.inventory.nettles--;save.planted.nettles=true;save.butterflies.peacock=true;save.sunshine+=25;persist();toast('🦋 New visitor: Peacock!');
 }
+function resetAllData(){save=fresh();persist();match=null;matchWin=false;listScroll=0;resetConfirm=false;go('island');toast('🌱 Nana’s Island has been reset');}
 function toast(message){toastState={message,until:performance.now()+2300}}
 function action(name){
   if(name?.startsWith('go:')){go(name.slice(3));return}
   if(name==='restart'&&match){match.restart();matchWin=false;return}
   if(name==='plant'){plantMilkweed();return}
   if(name==='plantNettles'){plantNettles();return}
+  if(name==='resetPrompt'){resetConfirm=true;return}
+  if(name==='resetCancel'){resetConfirm=false;return}
+  if(name==='resetConfirm'){resetAllData();return}
   if(name==='afterWin'){go(match?.level?.reward?.item==='milkweed'||match?.level?.reward?.item==='nettles'?'sanctuary':'island');return}
 }
 function drawBackground(){
@@ -98,6 +102,7 @@ function drawBackground(){
 function drawTop(title=null,pill=null){
   if(!title){
     text("Nana's Island",18,48,31,'#315f53','left',800,'Georgia');
+    fillRectRound(258,18,40,42,20,'#fff8df');strokeRectRound(258,18,40,42,20,'#d9c57e',2);emoji('⚙️',278,39,21);hits.push({x:254,y:14,w:48,h:50,action:'go:settings'});
     fillRectRound(306,16,66,46,22,'#fff7cf');strokeRectRound(306,16,66,46,22,'#e9bd38',2);
     emoji('☀️',326,39,22);text(String(save.sunshine),351,46,18,'#3e3a2f','center',800);return;
   }
@@ -122,6 +127,24 @@ function drawIsland(t){
   panel(17,402,356,136);emoji(level.reward?.icon||'🌱',63,470,42);text(level.name,102,444,19,'#3d392e','left',800);wrap(level.hint,102,475,245,24,17,'#655d50',500,3);
   panel(17,553,356,112,'rgba(255,255,255,.86)');emoji('🐘',53,608,38);text('Ellie:',88,586,18,'#3d392e','left',800);wrap(free?'The sanctuary is looking lovely. Play whenever you fancy.':save.levelWins?'That went nicely. There is always another little job waiting.':'One flower bed at a time. The island can wait.',88,613,242,23,17,'#4d463d',500,3);emoji('🐒',345,612,34);
   drawNav();
+}
+
+
+function drawSettings(){
+  drawTop('Settings');
+  panel(18,82,354,190);emoji('🌼',58,129,38);text('Game progress',92,120,22,'#315f53','left',800,'Georgia');
+  text(`${save.levelWins} levels cleared`,92,153,18,'#4e5148','left',700);text(`${1+(save.butterflies.monarch?1:0)+(save.butterflies.peacock?1:0)} butterflies visiting`,92,182,18,'#4e5148','left',700);text(`${save.sunshine} sunshine`,92,211,18,'#4e5148','left',700);
+  panel(18,294,354,258);text('Saved on this phone',38,337,22,'#315f53','left',800,'Georgia');wrap('Nana’s Island keeps progress on this device. Resetting removes levels, sunshine, plants, butterflies and collected items.',38,371,314,26,18,'#5b564c',500,5);
+  button('Reset all data',52,474,286,58,'resetPrompt',{fill:'#fff0e8',stroke:'#cf7b65',size:19,icon:'🗑️'});
+  button('Back to island',82,590,226,58,'go:island',{fill:'#fff8df',stroke:'#d9c57e',size:18,icon:'🏝️'});
+  panel(18,668,354,64,'rgba(255,255,255,.78)');emoji('🐘',52,700,32);text('More options can live here later.',82,706,16,'#5b564c','left',500);
+  if(resetConfirm)drawResetConfirm();
+}
+function drawResetConfirm(){
+  hits.push({x:0,y:0,w:VW,h:VH,action:'noop'});ctx.fillStyle='rgba(35,55,48,.72)';ctx.fillRect(0,0,VW,VH);
+  panel(34,246,322,330,'#fff8df');emoji('⚠️',195,292,40);text('Reset everything?',195,339,25,'#5b3a32','center',800,'Georgia');
+  wrap('This permanently clears all Nana’s Island progress on this phone. It cannot be undone.',67,380,256,27,18,'#5b514a',600,4);
+  button('Cancel',57,483,126,58,'resetCancel',{fill:'#fffdf4',stroke:'#d6cba6',size:18});button('Reset',207,483,126,58,'resetConfirm',{fill:'#f7c1ad',stroke:'#bd6752',size:18});
 }
 
 const BOARD={x:15,y:142,cell:40,w:360,h:360};
@@ -257,7 +280,7 @@ function render(now){
   const dt=Math.min(.04,(now-lastTime)/1000);lastTime=now;if(screen==='arcade')pong.update(dt);
   ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,cssW,cssH);ctx.fillStyle='#7ec9e5';ctx.fillRect(0,0,cssW,cssH);
   ctx.setTransform(dpr*scale,0,0,dpr*scale,dpr*offX,dpr*offY);hits=[];drawBackground();
-  if(screen==='island')drawIsland(now);else if(screen==='match')drawMatch();else if(screen==='sanctuary')drawSanctuary(now);else drawArcade();
+  if(screen==='island')drawIsland(now);else if(screen==='match')drawMatch();else if(screen==='sanctuary')drawSanctuary(now);else if(screen==='settings')drawSettings();else drawArcade();
   drawToast();requestAnimationFrame(render);
 }
 if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
