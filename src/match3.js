@@ -10,11 +10,10 @@ const tile=type=>({type,special:false});
 const special=type=>({type,special:true});
 
 export class Match3Model{
-  constructor(onChange,onWin){
-    this.onChange=onChange;this.onWin=onWin;this.board=[];
-    this.moves=18;this.yellow=0;this.target=12;this.score=0;
-    this.busy=false;this.selected=null;this.flash=[];this.combo=0;
-    this.rewarded=false;this.effect=null;this.resetBoard();this.report();
+  constructor(onChange,onWin,level={}){
+    this.onChange=onChange;this.onWin=onWin;this.level=level;this.board=[];
+    this.score=0;this.busy=false;this.selected=null;this.flash=[];this.combo=0;
+    this.rewarded=false;this.effect=null;this.resetBoard();this.resetObjectiveState();this.report();
   }
   randomType(){return Math.floor(Math.random()*TILE_ICONS.length)}
   randomTile(){return tile(this.randomType())}
@@ -27,6 +26,20 @@ export class Match3Model{
       this.board[r][c]=tile(t);
     }
   }
+  resetObjectiveState(){
+    const o=this.level.objective||{kind:'collect',type:0,target:12};this.objective=o;
+    this.moves=this.level.moves??18;this.collected=Array(TILE_ICONS.length).fill(0);this.specialsUsed=Array(TILE_ICONS.length).fill(0);
+    this.weeds=new Set(o.kind==='weeds'?(o.cells||[]).map(key):[]);this.weedsCleared=0;
+    this.bloomCells=new Set(o.kind==='bloom'?(o.cells||[]).map(key):[]);this.bloomed=new Set();
+    this.webs=new Set(o.kind==='rescue'?(o.cells||[]).map(key):[]);this.rescued=0;
+    if(o.kind==='rescue'){
+      for(const q of o.cells||[])this.board[q.r][q.c]=tile(1);
+      for(let guard=0;guard<40;guard++){const groups=this.findMatches();if(!groups.length)break;for(const group of groups)for(const q of group)if(!this.webs.has(key(q)))this.board[q.r][q.c]=this.randomTile()}
+    }
+    this.drops=(o.kind==='drop'?(o.drops||[]):[]).map((d,i)=>({...d,id:i,delivered:false}));this.delivered=0;this.completed=false;
+  }
+  objectiveProgress(){const o=this.objective;if(o.kind==='collect')return this.collected[o.type]||0;if(o.kind==='score')return this.score;if(o.kind==='useSpecial')return this.specialsUsed[o.type]||0;if(o.kind==='weeds')return this.weedsCleared;if(o.kind==='drop')return this.delivered;if(o.kind==='rescue')return this.rescued;if(o.kind==='bloom')return this.bloomed.size;return 0}
+  checkWin(){if(!this.completed&&this.objectiveProgress()>=this.objective.target){this.completed=true;this.onWin?.()}}
   isAdjacent(a,b){return !!a&&!!b&&Math.abs(a.r-b.r)+Math.abs(a.c-b.c)===1}
   cellAt(p){return this.board[p.r]?.[p.c]??null}
   swap(a,b){const t=this.board[a.r][a.c];this.board[a.r][a.c]=this.board[b.r][b.c];this.board[b.r][b.c]=t}
@@ -48,8 +61,7 @@ export class Match3Model{
   async trySwap(a,b){
     this.busy=true;this.swap(a,b);this.report();await wait(90);
     if(!this.findMatches().length){this.swap(a,b);this.busy=false;this.report();return}
-    this.moves--;await this.resolve([a,b]);this.busy=false;this.report();
-    if(this.yellow>=this.target)this.onWin?.();
+    this.moves--;await this.resolve([a,b]);this.busy=false;this.checkWin();this.report();
   }
   findMatches(){
     const groups=[];
@@ -93,8 +105,13 @@ export class Match3Model{
     }
   }
   countAndScore(cells,mult=1){
-    for(const p of cells){const t=this.cellAt(p);if(t?.type===0)this.yellow++}
-    this.score+=cells.length*25*mult;
+    for(const p of cells){const t=this.cellAt(p);if(t)this.collected[t.type]=(this.collected[t.type]||0)+1}
+    this.processBoardObjectives(cells);this.score+=cells.length*25*mult;
+  }
+  processBoardObjectives(cells){
+    for(const p of cells){const k=key(p);if(this.weeds.delete(k))this.weedsCleared++;if(this.bloomCells.has(k))this.bloomed.add(k)}
+    for(const wk of [...this.webs]){const [r,c]=wk.split(',').map(Number);if(cells.some(p=>Math.abs(p.r-r)+Math.abs(p.c-c)<=1)){this.webs.delete(wk);this.rescued++}}
+    for(const d of this.drops){if(d.delivered)continue;const n=cells.filter(p=>p.c===d.c&&p.r>=d.r).length;if(n){d.r+=n;if(d.r>=ROWS){d.delivered=true;this.delivered++}}}
   }
   vinePath(origin){
     const out=[],seen=new Set();let r=origin.r,c=origin.c,dir=c<COLS/2?1:-1,vert=r<ROWS/2?1:-1;
@@ -130,11 +147,11 @@ export class Match3Model{
   }
   async activateSpecial(origin){
     const source=this.cellAt(origin);if(this.busy||!source?.special)return;
-    this.busy=true;this.selected=null;const targets=this.specialTargets(origin,source.type);
+    this.busy=true;this.selected=null;this.specialsUsed[source.type]=(this.specialsUsed[source.type]||0)+1;const targets=this.specialTargets(origin,source.type);
     this.effect={type:source.type,origin,path:targets};this.flash=targets;this.report();await wait(source.type===3?340:240);
     this.countAndScore(targets,2);for(const p of targets)this.board[p.r][p.c]=null;
     this.report();await wait(105);this.flash=[];this.effect=null;this.collapse();this.report();await wait(135);
-    await this.resolve();this.busy=false;this.report();if(this.yellow>=this.target)this.onWin?.();
+    await this.resolve();this.busy=false;this.checkWin();this.report();
   }
   collapse(){
     for(let c=0;c<COLS;c++){
@@ -142,9 +159,9 @@ export class Match3Model{
       while(w>=0)this.board[w--][c]=this.randomTile();
     }
   }
-  report(){this.onChange?.({moves:this.moves,yellow:this.yellow,target:this.target,score:this.score})}
+  report(){this.onChange?.({moves:this.moves,score:this.score,progress:this.objectiveProgress(),target:this.objective.target,objective:this.objective})}
   restart(){
-    this.moves=18;this.yellow=0;this.score=0;this.busy=false;this.selected=null;this.flash=[];this.combo=0;this.rewarded=false;this.effect=null;this.resetBoard();this.report();
+    this.score=0;this.busy=false;this.selected=null;this.flash=[];this.combo=0;this.rewarded=false;this.effect=null;this.resetBoard();this.resetObjectiveState();this.report();
   }
 }
 

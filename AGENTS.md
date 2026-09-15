@@ -52,3 +52,10 @@
 - A 4+ match preserves the moved tile as a tappable powered tile and clears the other matched tiles; cascade-created 4+ matches preserve a sensible tile in the run.
 - Powered results: sunflower→sun (3x3), caterpillar→butterfly (all leaves), water→rain (its column), hyacinth→grapes (snaking vine path), strawberry→fruit salad (all caterpillars), leaf→tree (all water).
 - Tapping a powered tile activates it without spending another move.
+
+## Match-3 content progression
+- Keep level definitions data-driven in `src/levels.js`; avoid hard-coding individual mission rules into the renderer.
+- Current objective vocabulary: collect tile types, use a named special, clear weeds, drop seed packets, rescue webbed caterpillars, bloom soil beds, and score/free play.
+- Keep early levels generous rather than tuned for repeated failure. A failed level should cost nothing except a retry.
+- Match-3 rewards should feed the persistent island/sanctuary where practical; special plants can attract new butterfly species rather than awarding butterflies directly.
+- After the authored level run, keep a no-pressure free-play board available instead of blocking play.

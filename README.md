@@ -31,3 +31,8 @@ Live URL: `https://je55pr.github.io/nanas-island/`
 
 ## Current match-3 pieces
 The board uses six base pieces: sunflower, caterpillar, water drop, purple hyacinth, strawberry, and leaf. Four-piece matches create tappable powered tiles with species/theme-specific effects rather than generic bombs.
+
+## Current level content
+There are now 10 authored match-3 missions followed by Garden Free Play. Missions exercise collecting specific pieces, using named 4-match powers, clearing weeds, dropping seed packets, freeing webbed caterpillars, and blooming soil beds. Rewards are persisted into the island save.
+
+Milkweed from Level 1 can attract the Monarch in the sanctuary. Nettles from Level 4 can be planted later to attract a Peacock, giving the first authored progression chain from match-3 reward to habitat to butterfly discovery.
