@@ -20,7 +20,7 @@ Mobile-first HTML5 game with a single visible Canvas, touch-first controls, offl
 ## Run the prototype
 Double-click `RUN.cmd`. It serves the game locally at `http://127.0.0.1:8977/` and opens it in the default browser.
 
-The first playable prototype includes the island hub, a 7x8 touch-first match-3 board, persistent local progress, flower rewards, a butterfly sanctuary/field guide, and a tiny Pong minigame in the pavilion. Placeholder art is intentional; proposed generated-art slots are tracked in `docs/ART_APPROVALS.md`.
+The first playable prototype includes the island hub, a 9x9 touch-first match-3 board, persistent local progress, flower rewards, a butterfly sanctuary/field guide, and a tiny Pong minigame in the pavilion. Placeholder art is intentional; proposed generated-art slots are tracked in `docs/ART_APPROVALS.md`.
 
 ## Rendering architecture
 All visible game UI is rendered through a single HTML5 canvas. The page itself is only a minimal PWA shell. The game uses a fixed 390x844 virtual portrait screen, scales cleanly to the device viewport/DPR, and keeps scrolling confined to intentional in-game regions such as the butterfly book.

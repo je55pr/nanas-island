@@ -42,3 +42,8 @@
 - Keep HTML as a minimal PWA/bootstrap shell only.
 - Use a fixed virtual portrait coordinate system with device-pixel-ratio aware scaling and touch-to-game coordinate mapping.
 - Preserve the fixed-screen rule: only bounded in-game regions such as books/lists may scroll, implemented inside the canvas.
+
+## Screen-space efficiency
+- Reserve the large Nana's Island title/branding for the island home screen; secondary gameplay screens should use compact local headers.
+- Prefer giving reclaimed space to gameplay, large readable controls, and content rather than decorative repetition.
+- The main match-3 board is 9x9.

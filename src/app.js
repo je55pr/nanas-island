@@ -69,10 +69,13 @@ function drawBackground(){
   const g=ctx.createLinearGradient(0,0,0,VH);g.addColorStop(0,'#98dcf3');g.addColorStop(.5,'#d9f4dc');g.addColorStop(1,'#fff6cc');ctx.fillStyle=g;ctx.fillRect(0,0,VW,VH);
 }
 function drawTop(title=null,pill=null){
-  text("Nana's Island",18,48,31,'#315f53','left',800,'Georgia');
-  fillRectRound(306,16,66,46,22,'#fff7cf');strokeRectRound(306,16,66,46,22,'#e9bd38',2);
-  emoji('☀️',326,39,22);text(String(save.sunshine),351,46,18,'#3e3a2f','center',800);
-  if(title){const titleSize=title.length>18?26:28;text(title,18,104,titleSize,'#315f53','left',800,'Georgia');if(pill){fillRectRound(292,80,80,42,20,'#fff8df');text(pill,332,106,16,'#3e3a2f','center',800)}}
+  if(!title){
+    text("Nana's Island",18,48,31,'#315f53','left',800,'Georgia');
+    fillRectRound(306,16,66,46,22,'#fff7cf');strokeRectRound(306,16,66,46,22,'#e9bd38',2);
+    emoji('☀️',326,39,22);text(String(save.sunshine),351,46,18,'#3e3a2f','center',800);return;
+  }
+  const titleSize=title.length>18?24:28;text(title,18,51,titleSize,'#315f53','left',800,'Georgia');
+  if(pill){fillRectRound(300,18,72,42,20,'#fff8df');text(pill,336,45,15,'#3e3a2f','center',800)}
 }
 function drawNav(){
   ctx.fillStyle='rgba(255,252,235,.98)';ctx.fillRect(0,NAV_Y,VW,VH-NAV_Y);ctx.strokeStyle='#d8cfaa';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(0,NAV_Y);ctx.lineTo(VW,NAV_Y);ctx.stroke();
@@ -96,26 +99,26 @@ function drawIsland(t){
   drawNav();
 }
 
-const BOARD={x:34,y:202,cell:46,w:322,h:368};
+const BOARD={x:15,y:142,cell:40,w:360,h:360};
 function drawMatch(){
   drawTop('Sunny Border',`Level ${save.levelWins+1}`);
-  panel(17,134,356,604);drawMatchStats();drawBoard();
-  text('Swipe a tile, or tap one then a neighbour.',195,605,17,'#54685e','center',700);text('Match 3 or more.',195,629,17,'#54685e','center',700);
-  button('Restart board',120,648,150,48,'restart',{fill:'#fffdf0',stroke:'#d9d2b4',size:16});
-  fillRectRound(30,706,330,38,16,'#fff3bd');emoji('🌿',54,725,24);text('Reward: Milkweed cutting',75,731,16,'#4f4b3e','left',800);
+  panel(10,72,370,666);drawMatchStats();drawBoard();
+  text('Swipe a tile, or tap one then a neighbour.',195,535,17,'#54685e','center',700);text('Match 3 or more.',195,559,17,'#54685e','center',700);
+  button('Restart board',120,579,150,48,'restart',{fill:'#fffdf0',stroke:'#d9d2b4',size:16});
+  fillRectRound(30,642,330,42,16,'#fff3bd');emoji('🌿',54,663,24);text('Reward: Milkweed cutting',75,669,16,'#4f4b3e','left',800);
   if(matchWin)drawWinOverlay();drawNav();
 }
 function drawMatchStats(){
   const vals=[[`MOVES`,match?.moves??18],[`SUNFLOWERS`,`${Math.min(match?.yellow??0,match?.target??12)} / ${match?.target??12}`],[`SCORE`,match?.score??0]];
-  vals.forEach((v,i)=>{const x=29+i*111;fillRectRound(x,148,103,44,14,'#fff8df');text(v[0],x+51.5,165,13,'#594f3e','center',800);text(String(v[1]),x+51.5,187,21,'#315f53','center',800)});
+  vals.forEach((v,i)=>{const x=29+i*111;fillRectRound(x,86,103,44,14,'#fff8df');text(v[0],x+51.5,103,13,'#594f3e','center',800);text(String(v[1]),x+51.5,125,21,'#315f53','center',800)});
 }
 function drawBoard(){
   fillRectRound(BOARD.x-4,BOARD.y-4,BOARD.w+8,BOARD.h+8,18,'#355b4f');
   for(let r=0;r<MATCH_ROWS;r++)for(let c=0;c<MATCH_COLS;c++){
     const t=match?.board[r]?.[c],x=BOARD.x+c*BOARD.cell,y=BOARD.y+r*BOARD.cell;
-    fillRectRound(x+3,y+3,BOARD.cell-6,BOARD.cell-6,10,'rgba(255,255,255,.08)');if(t==null)continue;
-    fillRectRound(x+5,y+5,BOARD.cell-10,BOARD.cell-10,10,TILE_COLORS[t]);
-    ctx.fillStyle='rgba(255,255,255,.2)';rr(x+8,y+8,BOARD.cell-16,11,6);ctx.fill();emoji(TILE_ICONS[t],x+BOARD.cell/2,y+BOARD.cell/2+2,25);
+    fillRectRound(x+2,y+2,BOARD.cell-4,BOARD.cell-4,8,'rgba(255,255,255,.08)');if(t==null)continue;
+    fillRectRound(x+4,y+4,BOARD.cell-8,BOARD.cell-8,8,TILE_COLORS[t]);
+    ctx.fillStyle='rgba(255,255,255,.2)';rr(x+7,y+7,BOARD.cell-14,9,5);ctx.fill();emoji(TILE_ICONS[t],x+BOARD.cell/2,y+BOARD.cell/2+1,21);
     if(match?.selected?.r===r&&match.selected.c===c)strokeRectRound(x+3,y+3,BOARD.cell-6,BOARD.cell-6,11,'#fff7ad',4);
     if(match?.flash?.some(p=>p.r===r&&p.c===c)){ctx.fillStyle='rgba(255,250,183,.45)';rr(x+2,y+2,BOARD.cell-4,BOARD.cell-4,11);ctx.fill()}
   }
@@ -126,23 +129,23 @@ function drawWinOverlay(){
 }
 function drawSanctuary(t){
   drawTop('Butterfly Sanctuary',`${1+(save.butterflies.monarch?1:0)} / 3`);
-  fillRectRound(16,134,358,198,22,'#b8e8f8');ctx.save();rr(16,134,358,198,22);ctx.clip();ctx.fillStyle='#bde18c';ctx.fillRect(16,230,358,55);ctx.fillStyle='#6fa85d';ctx.fillRect(16,285,358,47);
-  ctx.strokeStyle='rgba(255,255,255,.85)';ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(62,300);ctx.lineTo(62,231);ctx.quadraticCurveTo(62,170,195,170);ctx.quadraticCurveTo(328,170,328,231);ctx.lineTo(328,300);ctx.stroke();
-  emoji('🌼',95,301,32);emoji('🌸',159,301,34);emoji(save.planted.milkweed?'🌿':'🌱',225,301,35);emoji('🌼',289,301,32);
-  const flap=Math.sin(t*.004)*8;emoji('🦋',113,215+flap,27);if(save.butterflies.monarch){emoji('🦋',251,205-flap,29);emoji('🦋',278,257+flap*.7,25)}ctx.restore();
-  text('Garden bag',20,365,25,'#315f53','left',800,'Georgia');text('Plants invite visitors',370,365,16,'#607568','right',700);
-  button('Sunny flowers ✓',16,384,174,48,'noop',{icon:'🌼',fill:'#fff8df',size:15});button(`Milkweed × ${save.inventory.milkweed}`,199,384,175,48,'noop',{icon:'🌿',fill:'#fff8df',size:15});
-  drawPlantQuest();text('Butterfly book',20,575,25,'#315f53','left',800,'Georgia');text('Real species',370,575,16,'#607568','right',700);
+  fillRectRound(16,72,358,212,22,'#b8e8f8');ctx.save();rr(16,72,358,212,22);ctx.clip();ctx.fillStyle='#bde18c';ctx.fillRect(16,170,358,57);ctx.fillStyle='#6fa85d';ctx.fillRect(16,227,358,57);
+  ctx.strokeStyle='rgba(255,255,255,.85)';ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(62,252);ctx.lineTo(62,181);ctx.quadraticCurveTo(62,116,195,116);ctx.quadraticCurveTo(328,116,328,181);ctx.lineTo(328,252);ctx.stroke();
+  emoji('🌼',95,253,32);emoji('🌸',159,253,34);emoji(save.planted.milkweed?'🌿':'🌱',225,253,35);emoji('🌼',289,253,32);
+  const flap=Math.sin(t*.004)*8;emoji('🦋',113,158+flap,27);if(save.butterflies.monarch){emoji('🦋',251,148-flap,29);emoji('🦋',278,205+flap*.7,25)}ctx.restore();
+  text('Garden bag',20,317,25,'#315f53','left',800,'Georgia');text('Plants invite visitors',370,317,16,'#607568','right',700);
+  button('Sunny flowers ✓',16,334,174,48,'noop',{icon:'🌼',fill:'#fff8df',size:15});button(`Milkweed × ${save.inventory.milkweed}`,199,334,175,48,'noop',{icon:'🌿',fill:'#fff8df',size:15});
+  drawPlantQuest();text('Butterfly book',20,526,25,'#315f53','left',800,'Georgia');text('Real species',370,526,16,'#607568','right',700);
   drawButterflyList();drawNav();
 }
 function drawPlantQuest(){
-  panel(16,447,358,105);emoji(save.planted.milkweed?'🌿':'🌱',55,499,39);
-  if(save.planted.milkweed){text('Milkweed patch planted',92,480,19,'#3e3a2f','left',800);wrap('The sanctuary has another little habitat to explore.',92,508,252,22,16,'#655d50',500,2)}
-  else if(save.inventory.milkweed>0){text('Milkweed cutting',92,476,19,'#3e3a2f','left',800);wrap('Plant it in the sunny bed and see who notices.',92,504,160,22,16,'#655d50',500,2);button('Plant',269,470,86,58,'plant',{fill:'#f5c84b',stroke:'#ca9d28',size:18})}
-  else{text('Empty planting spot',92,480,19,'#3e3a2f','left',800);wrap('Restore the Sunny Border to find something suitable.',92,508,252,22,16,'#655d50',500,2)}
+  panel(16,397,358,105);emoji(save.planted.milkweed?'🌿':'🌱',55,449,39);
+  if(save.planted.milkweed){text('Milkweed patch planted',92,430,19,'#3e3a2f','left',800);wrap('The sanctuary has another little habitat to explore.',92,458,252,22,16,'#655d50',500,2)}
+  else if(save.inventory.milkweed>0){text('Milkweed cutting',92,426,19,'#3e3a2f','left',800);wrap('Plant it in the sunny bed and see who notices.',92,454,160,22,16,'#655d50',500,2);button('Plant',269,420,86,58,'plant',{fill:'#f5c84b',stroke:'#ca9d28',size:18})}
+  else{text('Empty planting spot',92,430,19,'#3e3a2f','left',800);wrap('Restore the Sunny Border to find something suitable.',92,458,252,22,16,'#655d50',500,2)}
 }
 function drawButterflyList(){
-  const list={x:16,y:590,w:358,h:150},items=[
+  const list={x:16,y:542,w:358,h:198},items=[
     ['🦋','Cabbage White','First island visitor',true,'#f1f0ec'],
     ['🦋','Monarch',save.butterflies.monarch?'Attracted by the milkweed patch':'Needs a milkweed patch',save.butterflies.monarch,'#f7b45a'],
     ['🦋','Peacock','Find its favourite habitat later',false,'#8d7ac5']
@@ -154,12 +157,12 @@ function drawButterflyList(){
   ctx.restore();
 }
 
-const PONG_STAGE={x:55,y:214,w:280,h:174};
+const PONG_STAGE={x:45,y:148,w:300,h:190};
 function drawArcade(){
-  drawTop('Old Pavilion','1 game');panel(18,134,354,480);fillRectRound(35,162,320,282,22,'#5a4b3c');fillRectRound(46,177,298,244,14,'#786957');text("GIGI'S PONG",195,207,24,'#ffe66f','center',900,'Georgia');
+  drawTop('Old Pavilion','1 game');panel(18,72,354,550);fillRectRound(29,94,332,300,22,'#5a4b3c');fillRectRound(39,108,312,270,14,'#786957');text("GIGI'S PONG",195,139,24,'#ffe66f','center',900,'Georgia');
   fillRectRound(PONG_STAGE.x,PONG_STAGE.y,PONG_STAGE.w,PONG_STAGE.h,8,'#122820');strokeRectRound(PONG_STAGE.x,PONG_STAGE.y,PONG_STAGE.w,PONG_STAGE.h,8,'#cfc394',4);ctx.strokeStyle='rgba(255,255,255,.45)';ctx.setLineDash([7,6]);ctx.beginPath();ctx.moveTo(195,PONG_STAGE.y);ctx.lineTo(195,PONG_STAGE.y+PONG_STAGE.h);ctx.stroke();ctx.setLineDash([]);
-  drawPongObjects();text(`${pong.score[0]}     ${pong.score[1]}`,195,247,28,'#fff4c4','center',900);text('Drag on the screen',195,470,18,'#3f392f','center',800);text('to move your paddle.',195,495,18,'#3f392f','center',800);wrap('No tickets, stamina, adverts or prizes. It is here because games are fun.',49,535,292,24,17,'#655d50',500,3);
-  panel(18,629,354,93);emoji('🐒',52,676,37);text('Gigi:',88,657,18,'#3e3a2f','left',800);wrap('Repaired! Hitting it twice definitely counts.',88,683,255,21,16,'#554c43',500,2);drawNav();
+  drawPongObjects();text(`${pong.score[0]}     ${pong.score[1]}`,195,181,28,'#fff4c4','center',900);text('Drag on the screen',195,430,18,'#3f392f','center',800);text('to move your paddle.',195,455,18,'#3f392f','center',800);wrap('No tickets, stamina, adverts or prizes. It is here because games are fun.',49,500,292,24,17,'#655d50',500,3);
+  panel(18,634,354,96);emoji('🐒',52,681,37);text('Gigi:',88,662,18,'#3e3a2f','left',800);wrap('Repaired! Hitting it twice definitely counts.',88,688,255,21,16,'#554c43',500,2);drawNav();
 }
 function drawPongObjects(){
   const s=PONG_STAGE,pH=48,pW=8;
@@ -174,7 +177,7 @@ function boardCell(p){
 function inRect(p,r){return p.x>=r.x&&p.x<=r.x+r.w&&p.y>=r.y&&p.y<=r.y+r.h}
 canvas.addEventListener('pointerdown',e=>{
   e.preventDefault();const p=point(e);pointer={start:p,last:p,id:e.pointerId};canvas.setPointerCapture?.(e.pointerId);
-  if(screen==='sanctuary'&&inRect(p,{x:16,y:590,w:358,h:150}))listDrag=true;
+  if(screen==='sanctuary'&&inRect(p,{x:16,y:542,w:358,h:198}))listDrag=true;
   if(screen==='arcade'&&inRect(p,PONG_STAGE))pong.setPlayer((p.y-PONG_STAGE.y)/PONG_STAGE.h);
 });
 canvas.addEventListener('pointermove',e=>{
@@ -193,7 +196,7 @@ canvas.addEventListener('pointerup',e=>{
 });
 canvas.addEventListener('pointercancel',()=>{pointer=null;listDrag=false});
 canvas.addEventListener('wheel',e=>{
-  const p=point(e);if(screen==='sanctuary'&&inRect(p,{x:16,y:590,w:358,h:150})){e.preventDefault();listScroll+=Math.sign(e.deltaY)*44}
+  const p=point(e);if(screen==='sanctuary'&&inRect(p,{x:16,y:542,w:358,h:198})){e.preventDefault();listScroll+=Math.sign(e.deltaY)*44}
 },{passive:false});
 
 function drawToast(){

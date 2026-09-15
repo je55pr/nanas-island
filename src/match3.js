@@ -1,6 +1,6 @@
 export const TILE_ICONS=['🌻','🌺','🍃','💧','🫐','🐚'];
 export const TILE_COLORS=['#f6c83d','#ef6a82','#65b96f','#54b8d1','#7067b8','#efb879'];
-const COLS=7,ROWS=8;
+const COLS=9,ROWS=9;
 const wait=ms=>new Promise(r=>setTimeout(r,ms));
 
 export class Match3Model{
