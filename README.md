@@ -28,3 +28,6 @@ All visible game UI is rendered through a single HTML5 canvas. The page itself i
 ## Live dev build
 The `dev` branch automatically deploys through GitHub Actions to GitHub Pages after every push.
 Live URL: `https://je55pr.github.io/nanas-island/`
+
+## Current match-3 pieces
+The board uses six base pieces: sunflower, caterpillar, water drop, purple hyacinth, strawberry, and leaf. Four-piece matches create tappable powered tiles with species/theme-specific effects rather than generic bombs.

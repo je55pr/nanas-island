@@ -47,3 +47,8 @@
 - Reserve the large Nana's Island title/branding for the island home screen; secondary gameplay screens should use compact local headers.
 - Prefer giving reclaimed space to gameplay, large readable controls, and content rather than decorative repetition.
 - The main match-3 board is 9x9.
+## Match-3 core tiles and 4-match powers
+- Base tiles are sunflower, orange/white caterpillar, water drop, purple hyacinth, strawberry, and leaf.
+- A 4+ match preserves the moved tile as a tappable powered tile and clears the other matched tiles; cascade-created 4+ matches preserve a sensible tile in the run.
+- Powered results: sunflower→sun (3x3), caterpillar→butterfly (all leaves), water→rain (its column), hyacinth→grapes (snaking vine path), strawberry→fruit salad (all caterpillars), leaf→tree (all water).
+- Tapping a powered tile activates it without spending another move.
