@@ -24,3 +24,7 @@ The first playable prototype includes the island hub, a 7x8 touch-first match-3 
 
 ## Rendering architecture
 All visible game UI is rendered through a single HTML5 canvas. The page itself is only a minimal PWA shell. The game uses a fixed 390x844 virtual portrait screen, scales cleanly to the device viewport/DPR, and keeps scrolling confined to intentional in-game regions such as the butterfly book.
+
+## Live dev build
+The `dev` branch automatically deploys through GitHub Actions to GitHub Pages after every push.
+Live URL: `https://je55pr.github.io/nanas-island/`
